@@ -1,5 +1,10 @@
 package de.be.aff.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class Profile {
 
     private String name;
@@ -8,22 +13,6 @@ public class Profile {
 
     public Profile(String name, String surname) {
         this.name = name;
-        this.surname = surname;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
         this.surname = surname;
     }
 }

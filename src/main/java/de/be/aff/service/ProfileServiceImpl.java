@@ -1,6 +1,5 @@
 package de.be.aff.service;
 
-
 import de.be.aff.model.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
