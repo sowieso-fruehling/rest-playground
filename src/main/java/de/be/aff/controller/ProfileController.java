@@ -13,6 +13,22 @@ import java.util.Arrays;
 @RestController
 @RequiredArgsConstructor //lombok library creates constructor for fields marked as final
 //this way, we're practically having constructor injection
+/* Other lombok annotations are
+@Getter and @Setter
+@ToString
+@EqualsAndHashCode
+@AllArgsConstructor, @RequiredArgsConstructor and @NoArgsConstructor
+@Log, @Log4j, @Log4j2, @Slf4j, @XSlf4j, @CommonsLog, @JBossLog
+@Data
+@Builder
+@Singular
+@Delegate
+@Value
+@Accessors
+@Wither
+@SneakyThrows
+...
+ */
 public class ProfileController {
 
      private final ProfileService profileService;
