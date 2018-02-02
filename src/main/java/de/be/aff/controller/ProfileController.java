@@ -2,9 +2,12 @@ package de.be.aff.controller;
 
 import de.be.aff.model.Profile;
 import de.be.aff.service.ProfileService;
+import de.be.aff.util.RangeConverter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Range;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpStatusCodeException;
 import java.util.ArrayList;
@@ -33,18 +36,27 @@ public class ProfileController {
 
      private final ProfileService profileService;
 
-    //get request example http://localhost:8080/profile/1
-    @RequestMapping(value = "/profile/{id}")
+    //get request example http://localhost:8080/profiles/1
+    @RequestMapping(value = "/profiles/{id}")
     public Profile getProfileUsingPathVariable(@PathVariable Integer id) {
 
         return new Profile("Jane", "Smith");
     }
 
-    //get request example http://localhost:8080/profile?id=1
-    @RequestMapping(value = "/profile")
+    //get request example http://localhost:8080/profiles?id=1
+    @RequestMapping(value = "/profiles/parametrized")
     public Profile getProfileUsingRequestParameter(@RequestParam Integer id) {
 
         return new Profile("John", "Doe");
+    }
+
+
+    //get request example http://localhost:8080/profiles?ageRange=19-23
+    // we need to write custom converter to convert 19-23 into Range object
+    @GetMapping("/profiles/ranged")
+    public Profile getProfileUsingRange(@RequestParam(required = false) Range<Integer> ageRange) {
+
+        return new Profile("John", "Doe", ageRange.getLowerBound());
     }
 
     //get request example http://localhost:8080/profiles
@@ -73,4 +85,23 @@ public class ProfileController {
         else
             return new ResponseEntity<>(new ArrayList<Profile>(), HttpStatus.OK);
     }
+
+    // @InitBinder is used to customize request parameter data binding
+    // It has to be defined within controller, where it's used
+    // The @InitBinder annotated methods will get called on each HTTP request,
+    // if we don't specify the 'value' element of this annotation (we have set value element
+    // so custom handler will be set up only for controller methods which can have ageRange and blabla
+    // parameters - this parameters doesn't have to be used)
+    @InitBinder(value = {"ageRange","blabla"})
+    private void initBinder(final WebDataBinder webdataBinder) {
+        //WebDataBinder is binding parameters from web request to JavaBean objects
+        //we're registering custom binder for Range class
+        //when WebDataBinder tries to bind web request parameter to Range class, it will use our custom RangeConverter
+        webdataBinder.registerCustomEditor(Range.class, new RangeConverter());
+
+        //except registering custom binders, we could also do the following:
+        //webDataBinder.addCustomFormatter(..);
+        //webDataBinder.addValidators(..);
+    }
+    
 }
